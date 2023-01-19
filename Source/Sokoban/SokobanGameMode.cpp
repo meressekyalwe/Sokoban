@@ -1,10 +1,28 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
-#include "SokobanGameMode.h"
-#include "SokobanCharacter.h"
+#include "SOKOBANGameMode.h"
+#include "MyPlayerController.h"
+#include "MainMenuWidget.h"
+#include "Engine.h" 
 
-ASokobanGameMode::ASokobanGameMode()
+ASOKOBANGameMode::ASOKOBANGameMode()
 {
-	// Set default pawn class to our character
-	DefaultPawnClass = ASokobanCharacter::StaticClass();	
+	PrimaryActorTick.bCanEverTick = true;
+
+	PlayerControllerClass = AMyPlayerController::StaticClass();		
+}
+
+void ASOKOBANGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (MainMenuWidgetClass)
+	{
+		MMW = Cast<UMainMenuWidget>(CreateWidget(GetWorld(), MainMenuWidgetClass));
+
+		if (MMW)
+		{
+			MMW->AddToViewport();
+		}
+	}
 }
