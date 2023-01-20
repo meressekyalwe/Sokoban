@@ -5,6 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "SOKOBANGameMode.h"
 
 
 bool UMainMenuWidget::Initialize()
@@ -24,10 +25,12 @@ bool UMainMenuWidget::Initialize()
 
 void UMainMenuWidget::SettingsOnClicked()
 {
+	
 }
 
 void UMainMenuWidget::StartOnClicked()
 {
+	//RemoveFromParent();
 }
 
 void UMainMenuWidget::ExitOnClicked()

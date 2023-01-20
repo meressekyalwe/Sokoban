@@ -6,13 +6,12 @@
 #include "Blueprint/UserWidget.h"
 #include "MainMenuWidget.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SOKOBAN_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
 	
 	virtual bool Initialize();
 

@@ -3,13 +3,11 @@
 #include "SOKOBANGameMode.h"
 #include "MyPlayerController.h"
 #include "MainMenuWidget.h"
-#include "Engine.h" 
+#include "Runtime/Engine/Classes/Kismet/GamePlayStatics.h"
 
 ASOKOBANGameMode::ASOKOBANGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	PlayerControllerClass = AMyPlayerController::StaticClass();		
 }
 
 void ASOKOBANGameMode::BeginPlay()
@@ -25,4 +23,14 @@ void ASOKOBANGameMode::BeginPlay()
 			MMW->AddToViewport();
 		}
 	}
+}
+
+void ASOKOBANGameMode::SpawnGameLevels()
+{
+	UGameplayStatics::OpenLevel(this, "GameMap");
+
+	FVector Location(0);
+	FTransform Transform(Location);
+
+	GetWorld()->SpawnActor<AGameLevels>(GameLevelsClass, Transform);
 }

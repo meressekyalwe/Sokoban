@@ -2,14 +2,12 @@
 
 #pragma once
 
-
-
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-
 #include "MainMenuWidget.h"
-
+#include "GameLevels.h"
 #include "SOKOBANGameMode.generated.h"
+
 
 
 UCLASS()
@@ -23,13 +21,19 @@ public:
 
 	virtual void BeginPlay() override;
 
-	//virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable)
+	void SpawnGameLevels();
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UMainMenuWidget> MainMenuWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AGameLevels> GameLevelsClass;
 
 private:
 
-	UPROPERTY(EditDefaultsOnly, Category = "UMG")
-	TSubclassOf<UMainMenuWidget> MainMenuWidgetClass;
-
-	UPROPERTY(VisibleInstanceOnly, Category = "UMG")
+	UPROPERTY(VisibleInstanceOnly)
 	class UMainMenuWidget* MMW;
 };
