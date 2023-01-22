@@ -16,21 +16,12 @@ void ASOKOBANGameMode::BeginPlay()
 
 	if (MainMenuWidgetClass)
 	{
-		MMW = Cast<UMainMenuWidget>(CreateWidget(GetWorld(), MainMenuWidgetClass));
+		MenuWidget = Cast<UMainMenuWidget>(CreateWidget(GetWorld(), MainMenuWidgetClass));
 
-		if (MMW)
+		if (MenuWidget)
 		{
-			MMW->AddToViewport();
+			MenuWidget->AddToViewport();
 		}
 	}
 }
 
-void ASOKOBANGameMode::SpawnGameLevels()
-{
-	UGameplayStatics::OpenLevel(this, "GameMap");
-
-	FVector Location(0);
-	FTransform Transform(Location);
-
-	GetWorld()->SpawnActor<AGameLevels>(GameLevelsClass, Transform);
-}

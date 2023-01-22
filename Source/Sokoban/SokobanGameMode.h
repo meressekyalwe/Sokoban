@@ -21,9 +21,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable)
-	void SpawnGameLevels();
-
 protected:
 
 	UPROPERTY(EditDefaultsOnly)
@@ -35,5 +32,5 @@ protected:
 private:
 
 	UPROPERTY(VisibleInstanceOnly)
-	class UMainMenuWidget* MMW;
+	class UMainMenuWidget* MenuWidget;
 };

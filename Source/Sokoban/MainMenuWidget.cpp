@@ -29,8 +29,8 @@ void UMainMenuWidget::SettingsOnClicked()
 }
 
 void UMainMenuWidget::StartOnClicked()
-{
-	//RemoveFromParent();
+{	
+	RemoveFromParent();
 }
 
 void UMainMenuWidget::ExitOnClicked()
