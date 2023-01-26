@@ -3,7 +3,7 @@
 
 #include "GameLevels.h"
 #include "Engine/Engine.h"
-#include "PaperTileSet.h"
+#include "TileMapBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -20,6 +20,11 @@ AGameLevels::AGameLevels()
 	RootComponent = DefaultSceneRoot;
 
 	TileMap->AttachTo(DefaultSceneRoot);
+}
+
+void AGameLevels::BeginPlay()
+{
+	AnalyzeTileMap();
 }
 
 ENUM_Color AGameLevels::StringToColor(FString String)
@@ -50,13 +55,20 @@ ENUM_Color AGameLevels::StringToColor(FString String)
 	return Color;
 }
 
-FString AGameLevels::GetTileUserDataString(FSTR_TileMapLocation _TileLocation)
+FString AGameLevels::GetTileUserDataString(FSTR_TileMapLocation TileMapLocation)
 {
-	FPaperTileInfo Tile = TileMap->GetTile(_TileLocation.X, _TileLocation.Y, _TileLocation.Layer);
+	FPaperTileInfo TileInfo = TileMap->GetTile(TileMapLocation.X, TileMapLocation.Y, TileMapLocation.Layer);
 
-	FName Name = Tile.TileSet->GetTileUserData(Tile.GetTileIndex()); // BUG !!!
+	TileSet = TileInfo.TileSet;
 
-	return Name.ToString();
+	if (TileInfo.IsValid() && TileSet)
+	{
+		FName Name = TileSet->GetTileUserData(TileInfo.GetTileIndex()); // BUG !!!
+
+		return Name.ToString();
+	}
+	
+	return {};
 }
 
 FVector AGameLevels::TileMapToWorld(FSTR_TileMapLocation TileMapLocation, float Y_coordinate)

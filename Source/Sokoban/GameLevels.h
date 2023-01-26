@@ -13,6 +13,7 @@
 #include "Box_CPP.h"
 #include "Types.h"
 #include "Containers/UnrealString.h"
+#include "PaperTileSet.h"
 #include "GameLevels.generated.h"
 
 
@@ -25,10 +26,12 @@ public:
 	// Sets default values for this actor's properties
 	AGameLevels();
 
+	virtual void BeginPlay() override;
+
 	// Tile Map
 	ENUM_Color StringToColor(FString String);
 
-	FString GetTileUserDataString(FSTR_TileMapLocation _TileLocation);
+	FString GetTileUserDataString(FSTR_TileMapLocation TileMapLocation);
 
 	FVector TileMapToWorld(FSTR_TileMapLocation TileMapLocation, float Y_coordinate);
 
@@ -79,4 +82,7 @@ public:
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
 	USceneComponent * DefaultSceneRoot;
+
+	UPROPERTY(EditAnywhere, Category = "Sprite")
+	UPaperTileSet* TileSet = nullptr;
 };
