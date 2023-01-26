@@ -8,6 +8,9 @@
 #include "PaperTileMapComponent.h"
 #include "PaperSpriteComponent.h"
 #include "PaperSprite.h"
+#include "Goal_CPP.h"
+#include "Coin_CPP.h"
+#include "Box_CPP.h"
 #include "Types.h"
 #include "Containers/UnrealString.h"
 #include "GameLevels.generated.h"
@@ -22,11 +25,24 @@ public:
 	// Sets default values for this actor's properties
 	AGameLevels();
 
+	// Tile Map
+	ENUM_Color StringToColor(FString String);
+
 	FString GetTileUserDataString(FSTR_TileMapLocation _TileLocation);
 
 	FVector TileMapToWorld(FSTR_TileMapLocation TileMapLocation, float Y_coordinate);
 
 	void AnalyzeTileMap();
+
+	// Spawning 
+
+	void SpawnBoxes(float Y_coordinate);
+
+	void SpawnGoals(float Y_coordinate);
+
+	void SpawnCoins(float Y_coordinate);
+
+	void SetPlayerLocation(FVector Location);
 
 	// SPAWN
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
@@ -52,4 +68,15 @@ public:
 	UPaperTileMapComponent* TileMap;
 
 	// SUBCLASS
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AGoal_CPP> GoalClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ACoin_CPP> CoinClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<ABox_CPP> BoxClass;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
+	USceneComponent * DefaultSceneRoot;
 };

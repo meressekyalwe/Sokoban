@@ -10,3 +10,7 @@ AGoal_CPP::AGoal_CPP()
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 }
 
+void AGoal_CPP::UpdateColor(ENUM_Color NewColor)
+{
+	Color = NewColor;
+}

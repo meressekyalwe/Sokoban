@@ -4,6 +4,9 @@
 #include "MyPlayerController.h"
 #include "MainMenuWidget.h"
 #include "Runtime/Engine/Classes/Kismet/GamePlayStatics.h"
+#include "Engine/Engine.h"
+#include "PaperTileSet.h"
+#include "Containers/UnrealString.h"
 
 ASOKOBANGameMode::ASOKOBANGameMode()
 {
@@ -24,4 +27,7 @@ void ASOKOBANGameMode::BeginPlay()
 		}
 	}
 }
+
+
+
 

@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "MainMenuWidget.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FStartGame);
+
 UCLASS()
 class SOKOBAN_API UMainMenuWidget : public UUserWidget
 {
@@ -14,6 +16,8 @@ class SOKOBAN_API UMainMenuWidget : public UUserWidget
 public:
 	
 	virtual bool Initialize();
+
+	FStartGame StartGame;
 
 protected:
 

@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "SOKOBANGameMode.h"
+#include "Engine/World.h"
 
 
 bool UMainMenuWidget::Initialize()
@@ -30,7 +31,10 @@ void UMainMenuWidget::SettingsOnClicked()
 
 void UMainMenuWidget::StartOnClicked()
 {	
-	RemoveFromParent();
+
+	UGameplayStatics::OpenLevel(this, "GameMap");
+
+	//https://nerivec.github.io/old-ue4-wiki/pages/clear-widgets-when-switching-levels.html
 }
 
 void UMainMenuWidget::ExitOnClicked()

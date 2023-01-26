@@ -6,6 +6,7 @@
 #include "PaperSpriteActor.h"
 #include "PaperSpriteComponent.h"
 #include "Components/BoxComponent.h"
+#include "Types.h"
 #include "Goal_CPP.generated.h"
 
 /**
@@ -20,9 +21,18 @@ public:
 
 	AGoal_CPP();
 
+	void UpdateColor(ENUM_Color NewColor);
+
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	UPaperSpriteComponent* Sprite;	
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	UBoxComponent* Box;
+
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	ENUM_Color Color;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	bool bOccupied = false;
 };
