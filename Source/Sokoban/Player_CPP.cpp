@@ -41,6 +41,8 @@ void APlayer_CPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	SetActorTickInterval(Delaytime);
+
 	if (!MovementDirection.IsZero())
 	{
 		const FVector NewActorLocation = GetActorLocation() + (MovementDirection * MovementSpeed);

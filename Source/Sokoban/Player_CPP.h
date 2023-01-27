@@ -44,10 +44,5 @@ public:
 	float MovementSpeed = 128.0f;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	float Delaytime = 0;
-
-
-	FTimerHandle TimerHandle;
-
-	FTimerDelegate Delegate;	
+	float Delaytime = 0.2f;	
 };
