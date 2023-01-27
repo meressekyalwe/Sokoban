@@ -11,6 +11,7 @@
 #include "Goal_CPP.h"
 #include "Coin_CPP.h"
 #include "Box_CPP.h"
+#include "Player_CPP.h"
 #include "Types.h"
 #include "Containers/UnrealString.h"
 #include "PaperTileSet.h"
@@ -28,6 +29,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	void AddUniqueElement(TArray<FSTR_SpawnInformation> SpawnInfoArray, FSTR_SpawnInformation SpawnInfo);
+
 	// Tile Map
 	ENUM_Color StringToColor(FString String);
 
@@ -37,6 +40,8 @@ public:
 
 	void AnalyzeTileMap();
 
+	void ClearGameTileMapLayer();
+
 	// Spawning 
 
 	void SpawnBoxes(float Y_coordinate);
@@ -45,7 +50,7 @@ public:
 
 	void SpawnCoins(float Y_coordinate);
 
-	void SetPlayerLocation(FVector Location);
+	void SpawnPlayer();
 
 	// SPAWN
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
@@ -80,9 +85,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ABox_CPP> BoxClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APlayer_CPP> PlayerClass;
+
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
 	USceneComponent * DefaultSceneRoot;
-
-	UPROPERTY(EditAnywhere, Category = "Sprite")
-	UPaperTileSet* TileSet = nullptr;
 };

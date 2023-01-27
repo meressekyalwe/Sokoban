@@ -18,7 +18,9 @@ class SOKOBAN_API ACoin_CPP : public APaperSpriteActor
 public:
 
 	ACoin_CPP();
+
+	virtual void BeginPlay() override;
 	
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UPaperSpriteComponent* Sprite;
+	//UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	//UPaperSpriteComponent* Sprite;
 };

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "PaperSpriteActor.h"
 #include "PaperSpriteComponent.h"
+#include "PaperTileSet.h"
+#include "Types.h"
 #include "Box_CPP.generated.h"
 
 /**
@@ -19,7 +21,11 @@ public:
 
 	ABox_CPP();
 
+	UFUNCTION(BlueprintNativeEvent)
+	void UpdateColor_BP(ENUM_Color Color);
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UPaperSpriteComponent* Sprite;
+	void UpdateColor(ENUM_Color Color);
+
+	//UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	//UPaperSpriteComponent* Sprite;
 };

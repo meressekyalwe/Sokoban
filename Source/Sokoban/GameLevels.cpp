@@ -25,6 +25,16 @@ AGameLevels::AGameLevels()
 void AGameLevels::BeginPlay()
 {
 	AnalyzeTileMap();
+	ClearGameTileMapLayer();
+	SpawnPlayer();
+	SpawnBoxes(4);
+	SpawnCoins(3);
+	SpawnGoals(3);
+}
+
+void AGameLevels::AddUniqueElement(TArray<FSTR_SpawnInformation> SpawnInfoArray, FSTR_SpawnInformation SpawnInfo)
+{
+
 }
 
 ENUM_Color AGameLevels::StringToColor(FString String)
@@ -59,9 +69,11 @@ FString AGameLevels::GetTileUserDataString(FSTR_TileMapLocation TileMapLocation)
 {
 	FPaperTileInfo TileInfo = TileMap->GetTile(TileMapLocation.X, TileMapLocation.Y, TileMapLocation.Layer);
 
+	UPaperTileSet* TileSet = nullptr;
+
 	TileSet = TileInfo.TileSet;
 
-	if (TileInfo.IsValid() && TileSet)
+	if (TileSet)
 	{
 		FName Name = TileSet->GetTileUserData(TileInfo.GetTileIndex()); // BUG !!!
 
@@ -75,7 +87,7 @@ FVector AGameLevels::TileMapToWorld(FSTR_TileMapLocation TileMapLocation, float 
 {
 	float Width = TileMap->TileMap->TileWidth * TileMapLocation.X;
 
-	float Height = TileMap->TileMap->TileHeight * (TileMapLocation.Y - 1);
+	float Height = - TileMap->TileMap->TileHeight * (TileMapLocation.Y);
 
 	FVector WorldLocation = TileMap->K2_GetComponentLocation();
 
@@ -100,27 +112,24 @@ void AGameLevels::AnalyzeTileMap()
 
 				FString RightS;
 
-				FString SpriteName = GetTileUserDataString(FSTR_TileMapLocation{ k, j, i });
-
-				if (SpriteName.Split(TEXT("_"), &LeftS, &RightS, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+				if (GetTileUserDataString(FSTR_TileMapLocation{ k, j, i }).Split(TEXT("_"), &LeftS, &RightS, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 				{
-					FSTR_SpawnInformation SpawnInformation = FSTR_SpawnInformation{ TileLocation, StringToColor(RightS) }; // String To Color
 
 					if (LeftS.Equals(FString(TEXT("PlayerStart"), ESearchCase::CaseSensitive)))
 					{
 						PlayerStartLocation = TileMapToWorld(TileLocation, 5.0f);
 					}
-					if (LeftS.Equals(FString(TEXT("Box"), ESearchCase::CaseSensitive)))
+					else if (LeftS.Equals(FString(TEXT("Box"), ESearchCase::CaseSensitive)))
 					{
-						BoxSpawnLocation.Add(SpawnInformation);
+						BoxSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
 					}
-					if (LeftS.Equals(FString(TEXT("Goal"), ESearchCase::CaseSensitive)))
+					else if (LeftS.Equals(FString(TEXT("Goal"), ESearchCase::CaseSensitive)))
 					{
-						GoalSpawnLocation.Add(SpawnInformation);
+						GoalSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
 					}
-					if (LeftS.Equals(FString(TEXT("Coin"), ESearchCase::CaseSensitive)))
+					else if (LeftS.Equals(FString(TEXT("Coin"), ESearchCase::CaseSensitive)))
 					{
-						CoinSpawnLocation.Add(SpawnInformation);
+						CoinSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
 					}
 				}
 			}
@@ -128,13 +137,33 @@ void AGameLevels::AnalyzeTileMap()
 	}
 }
 
+void AGameLevels::ClearGameTileMapLayer()
+{
+	TileMap->MakeTileMapEditable();
+
+	int32 MapWidth, MapHeight, MapLayers;
+
+	TileMap->GetMapSize(MapWidth, MapHeight, MapLayers);
+
+	for (int32 i = 0; i < MapHeight; i++)
+	{
+		for (int32 j = 0; j < MapWidth; j++)
+		{
+			FPaperTileInfo TileInfo{};
+			TileMap->SetTile(j, i, 0, TileInfo);
+		}
+	}
+}
+
 void AGameLevels::SpawnBoxes(float Y_coordinate)
 {
+	
 	for (int i = 0; i < BoxSpawnLocation.Num(); i++)
 	{
 		FVector Location(TileMapToWorld(BoxSpawnLocation[i].TileMapLocation, Y_coordinate));
 		FTransform Transform(Location);
-		GetWorld()->SpawnActor<ABox_CPP>(BoxClass, Transform);
+		ABox_CPP* Box = GetWorld()->SpawnActor<ABox_CPP>(BoxClass, Transform);
+		Box->UpdateColor(BoxSpawnLocation[i].Color);
 	}
 }
 
@@ -144,7 +173,8 @@ void AGameLevels::SpawnGoals(float Y_coordinate)
 	{
 		FVector Location(TileMapToWorld(GoalSpawnLocation[i].TileMapLocation, Y_coordinate));
 		FTransform Transform(Location);
-		GetWorld()->SpawnActor<AGoal_CPP>(GoalClass, Transform);
+		AGoal_CPP* Goal = GetWorld()->SpawnActor<AGoal_CPP>(GoalClass, Transform);
+		Goal->UpdateColor(GoalSpawnLocation[i].Color);
 	}
 }
 
@@ -158,8 +188,10 @@ void AGameLevels::SpawnCoins(float Y_coordinate)
 	}
 }
 
-void AGameLevels::SetPlayerLocation(FVector Location)
+void AGameLevels::SpawnPlayer()
 {
-	//UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-
+	FTransform Transform(PlayerStartLocation);
+	GetWorld()->SpawnActor<APlayer_CPP>(PlayerClass, Transform);
 }
+
+

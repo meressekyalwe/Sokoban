@@ -5,12 +5,18 @@
 
 AGoal_CPP::AGoal_CPP()
 {
-	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
+	//Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
 
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 }
 
-void AGoal_CPP::UpdateColor(ENUM_Color NewColor)
+
+void AGoal_CPP::UpdateColor_BP_Implementation(ENUM_Color Color)
 {
-	Color = NewColor;
+	// In BP
+}
+
+void AGoal_CPP::UpdateColor(ENUM_Color Color)
+{
+	UpdateColor_BP(Color);
 }

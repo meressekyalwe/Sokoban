@@ -8,6 +8,7 @@
 #include "Engine/DataTable.h"
 #include "Misc/Guid.h"
 #include "PaperTileMapComponent.h"
+#include "PaperSpriteComponent.h"
 #include "Types.generated.h"
 
 UENUM(BlueprintType)
@@ -48,10 +49,17 @@ struct FSTR_TileMapLocation
 	int Y = 0;
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	int Layer = 0;
+
+public:
+
+	bool operator == (const FSTR_TileMapLocation TileMapLocation) const
+	{
+		return TileMapLocation.X == X && TileMapLocation.Y == Y && TileMapLocation.Layer == Layer;
+	}
 };
 
 USTRUCT(BlueprintType)
-struct FSTR_SpawnInformation
+struct FSTR_SpawnInformation 
 {
 	GENERATED_BODY()
 
@@ -60,7 +68,15 @@ struct FSTR_SpawnInformation
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	ENUM_Color Color;
+
+public:
+
+	bool operator == (const FSTR_SpawnInformation  SpawnInformation) const
+	{
+		return SpawnInformation.Color == Color && SpawnInformation.TileMapLocation == TileMapLocation;
+	}
 };
+
 
 /*
 USTRUCT(BlueprintType)

@@ -21,17 +21,16 @@ public:
 
 	AGoal_CPP();
 
-	void UpdateColor(ENUM_Color NewColor);
+	UFUNCTION(BlueprintNativeEvent)
+	void UpdateColor_BP(ENUM_Color Color);
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UPaperSpriteComponent* Sprite;	
+	void UpdateColor(ENUM_Color Color);
+
+	//UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	//UPaperSpriteComponent* Sprite;	
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	UBoxComponent* Box;
-
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	ENUM_Color Color;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	bool bOccupied = false;
