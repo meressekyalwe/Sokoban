@@ -2,12 +2,31 @@
 
 
 #include "MyPlayerController.h"
+#include "Components/InputComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AMyPlayerController::AMyPlayerController()
 {
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
+}
+
+void AMyPlayerController::HandlePauseButton()
+{
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+	if (PauseWidgetClass)
+	{
+		PauseWidget = Cast<UPauseWidget_CPP>(CreateWidget(GetWorld(), PauseWidgetClass));
+
+		if (PauseWidget)
+		{
+			PauseWidget->AddToViewport();
+			SetInputMode(FInputModeUIOnly());
+			bShowMouseCursor = true;
+		}
+	}
 }
 
 void AMyPlayerController::BeginPlay()
@@ -28,4 +47,6 @@ void AMyPlayerController::BeginPlay()
 void AMyPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
+	InputComponent->BindAction("Pause", EInputEvent::IE_Pressed, this, &AMyPlayerController::HandlePauseButton);
 }

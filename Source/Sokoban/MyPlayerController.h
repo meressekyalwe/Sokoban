@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "MainMenuWidget.h"
+#include "PauseWidget_CPP.h"
 #include "MyPlayerController.generated.h"
 
 /**
@@ -19,6 +20,8 @@ public:
 
 	AMyPlayerController();
 
+	void HandlePauseButton();
+
 	virtual void BeginPlay() override;
 
 	virtual void SetupInputComponent() override;
@@ -28,4 +31,10 @@ public:
 
 	UPROPERTY(VisibleInstanceOnly)
 	class UMainMenuWidget* MenuWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UPauseWidget_CPP> PauseWidgetClass;
+
+	UPROPERTY(VisibleInstanceOnly)
+	class UPauseWidget_CPP* PauseWidget;
 };
