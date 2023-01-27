@@ -24,3 +24,8 @@ void AMyPlayerController::BeginPlay()
 		}
 	}
 }
+
+void AMyPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+}

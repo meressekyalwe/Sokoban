@@ -19,7 +19,7 @@ AGameLevels::AGameLevels()
 
 	RootComponent = DefaultSceneRoot;
 
-	TileMap->AttachTo(DefaultSceneRoot);
+	TileMap->SetupAttachment(DefaultSceneRoot);
 }
 
 void AGameLevels::BeginPlay()
@@ -61,7 +61,7 @@ FString AGameLevels::GetTileUserDataString(FSTR_TileMapLocation TileMapLocation)
 
 	if (TileInfo.TileSet)
 	{
-		FName Name = (TileInfo.TileSet)->GetTileUserData(TileInfo.GetTileIndex()); // BUG !!!
+		FName Name = (TileInfo.TileSet)->GetTileUserData(TileInfo.GetTileIndex()); 
 
 		return Name.ToString();
 	}
@@ -178,5 +178,6 @@ void AGameLevels::SpawnPlayer()
 	FTransform Transform(PlayerStartLocation);
 	APlayer_CPP* Palyer = GetWorld()->SpawnActor<APlayer_CPP>(PlayerClass, Transform);
 }
+
 
 

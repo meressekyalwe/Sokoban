@@ -24,8 +24,8 @@ void ASOKOBANGameMode::SpawnLevel()
 	FTransform Transform(Location);
 	AGameLevels* GameLevel = GetWorld()->SpawnActor<AGameLevels>(GameLevelsClass, Transform);
 	GameLevel->AnalyzeTileMap();
-	GameLevel->ClearGameTileMapLayer();
 	GameLevel->SpawnPlayer();
+	GameLevel->ClearGameTileMapLayer();
 	GameLevel->SpawnBoxes(4);
 	GameLevel->SpawnCoins(3);
 	GameLevel->SpawnGoals(3);

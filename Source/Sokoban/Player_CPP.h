@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "Components/BoxComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "Types.h"
+#include "TimerManager.h"
 #include "Player_CPP.generated.h"
 
 UCLASS()
@@ -21,6 +23,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void VerticalMove(float AxisValue);
+
+	void HorizontalMove(float AxisValue);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -31,6 +37,17 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	UPaperFlipbookComponent* Sprite;
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
-	USceneComponent * DefaultSceneRoot;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	FVector MovementDirection;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	float MovementSpeed = 128.0f;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	float Delaytime = 0;
+
+
+	FTimerHandle TimerHandle;
+
+	FTimerDelegate Delegate;	
 };

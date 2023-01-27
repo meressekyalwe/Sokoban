@@ -58,10 +58,10 @@ public:
 	TArray<FSTR_SpawnInformation> GoalSpawnLocation;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
-	FVector PlayerStartLocation;
+	TArray<FSTR_SpawnInformation> CoinSpawnLocation;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
-	TArray<FSTR_SpawnInformation> CoinSpawnLocation;
+	FVector PlayerStartLocation;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
 	FVector PlayerHideLocation;
@@ -87,5 +87,5 @@ public:
 	TSubclassOf<APlayer_CPP> PlayerClass;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
-	USceneComponent * DefaultSceneRoot;
+	USceneComponent* DefaultSceneRoot;
 };
