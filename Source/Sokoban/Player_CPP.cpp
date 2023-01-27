@@ -10,9 +10,9 @@ APlayer_CPP::APlayer_CPP()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-
 	Sprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PaperFlipbookComponent"));
+
+	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +26,6 @@ void APlayer_CPP::BeginPlay()
 void APlayer_CPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input

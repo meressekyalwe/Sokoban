@@ -29,8 +29,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void AddUniqueElement(TArray<FSTR_SpawnInformation> SpawnInfoArray, FSTR_SpawnInformation SpawnInfo);
-
 	// Tile Map
 	ENUM_Color StringToColor(FString String);
 

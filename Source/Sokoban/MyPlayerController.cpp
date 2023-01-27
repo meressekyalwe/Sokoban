@@ -10,4 +10,17 @@ AMyPlayerController::AMyPlayerController()
 	bEnableMouseOverEvents = true;
 }
 
+void AMyPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
 
+	if (MainMenuWidgetClass)
+	{
+		MenuWidget = Cast<UMainMenuWidget>(CreateWidget(GetWorld(), MainMenuWidgetClass));
+
+		if (MenuWidget)
+		{
+			MenuWidget->AddToViewport();
+		}
+	}
+}

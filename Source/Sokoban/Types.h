@@ -50,8 +50,6 @@ struct FSTR_TileMapLocation
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	int Layer = 0;
 
-public:
-
 	bool operator == (const FSTR_TileMapLocation TileMapLocation) const
 	{
 		return TileMapLocation.X == X && TileMapLocation.Y == Y && TileMapLocation.Layer == Layer;
@@ -69,35 +67,11 @@ struct FSTR_SpawnInformation
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	ENUM_Color Color;
 
-public:
-
 	bool operator == (const FSTR_SpawnInformation  SpawnInformation) const
 	{
 		return SpawnInformation.Color == Color && SpawnInformation.TileMapLocation == TileMapLocation;
 	}
 };
-
-
-/*
-USTRUCT(BlueprintType)
-struct FSTR_LevelGameData
-{
-	GENERATED_BODY()
-
-	PROPERTY(EditAnyWhere, BlueprintReadWrite)
-	FGuid ID = FGuid{ 00000000, 0000, 0000, 0000 };
-
-	PROPERTY(EditAnyWhere, BlueprintReadWrite)
-	FText HUD_ButtonText;
-};
-
-USTRUCT(BlueprintType)
-struct FSTR_LevelSaveData
-{
-	GENERATED_BODY()
-
-};
-*/
 
 UCLASS()
 class SOKOBAN_API UTypes : public UBlueprintFunctionLibrary

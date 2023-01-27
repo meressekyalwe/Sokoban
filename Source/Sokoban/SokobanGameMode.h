@@ -4,15 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "MainMenuWidget.h"
-#include "PaperTileMap.h"
-#include "PaperTileMapComponent.h"
-#include "PaperSpriteComponent.h"
-#include "PaperSprite.h"
-#include "Goal_CPP.h"
-#include "Coin_CPP.h"
-#include "Box_CPP.h"
-#include "Types.h"
+#include "GameLevels.h"
 #include "SOKOBANGameMode.generated.h"
 
 
@@ -29,8 +21,7 @@ public:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UMainMenuWidget> MainMenuWidgetClass;
+	TSubclassOf<AGameLevels> GameLevelsClass;
 
-	UPROPERTY(VisibleInstanceOnly)
-	class UMainMenuWidget* MenuWidget;
+	void SpawnLevel();
 };

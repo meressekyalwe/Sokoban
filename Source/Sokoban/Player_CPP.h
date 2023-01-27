@@ -29,8 +29,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UBoxComponent* Box;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	UPaperFlipbookComponent* Sprite;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
+	USceneComponent * DefaultSceneRoot;
 };

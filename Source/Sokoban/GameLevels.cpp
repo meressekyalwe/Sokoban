@@ -24,17 +24,7 @@ AGameLevels::AGameLevels()
 
 void AGameLevels::BeginPlay()
 {
-	AnalyzeTileMap();
-	ClearGameTileMapLayer();
-	SpawnPlayer();
-	SpawnBoxes(4);
-	SpawnCoins(3);
-	SpawnGoals(3);
-}
-
-void AGameLevels::AddUniqueElement(TArray<FSTR_SpawnInformation> SpawnInfoArray, FSTR_SpawnInformation SpawnInfo)
-{
-
+	Super::BeginPlay();
 }
 
 ENUM_Color AGameLevels::StringToColor(FString String)
@@ -69,13 +59,9 @@ FString AGameLevels::GetTileUserDataString(FSTR_TileMapLocation TileMapLocation)
 {
 	FPaperTileInfo TileInfo = TileMap->GetTile(TileMapLocation.X, TileMapLocation.Y, TileMapLocation.Layer);
 
-	UPaperTileSet* TileSet = nullptr;
-
-	TileSet = TileInfo.TileSet;
-
-	if (TileSet)
+	if (TileInfo.TileSet)
 	{
-		FName Name = TileSet->GetTileUserData(TileInfo.GetTileIndex()); // BUG !!!
+		FName Name = (TileInfo.TileSet)->GetTileUserData(TileInfo.GetTileIndex()); // BUG !!!
 
 		return Name.ToString();
 	}
@@ -114,7 +100,6 @@ void AGameLevels::AnalyzeTileMap()
 
 				if (GetTileUserDataString(FSTR_TileMapLocation{ k, j, i }).Split(TEXT("_"), &LeftS, &RightS, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 				{
-
 					if (LeftS.Equals(FString(TEXT("PlayerStart"), ESearchCase::CaseSensitive)))
 					{
 						PlayerStartLocation = TileMapToWorld(TileLocation, 5.0f);
@@ -191,7 +176,7 @@ void AGameLevels::SpawnCoins(float Y_coordinate)
 void AGameLevels::SpawnPlayer()
 {
 	FTransform Transform(PlayerStartLocation);
-	GetWorld()->SpawnActor<APlayer_CPP>(PlayerClass, Transform);
+	APlayer_CPP* Palyer = GetWorld()->SpawnActor<APlayer_CPP>(PlayerClass, Transform);
 }
 
 

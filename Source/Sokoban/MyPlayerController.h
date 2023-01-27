@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "MainMenuWidget.h"
 #include "MyPlayerController.generated.h"
 
 /**
@@ -18,4 +19,11 @@ public:
 
 	AMyPlayerController();
 
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UMainMenuWidget> MainMenuWidgetClass;
+
+	UPROPERTY(VisibleInstanceOnly)
+	class UMainMenuWidget* MenuWidget;
 };

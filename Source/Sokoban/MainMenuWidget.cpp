@@ -31,10 +31,14 @@ void UMainMenuWidget::SettingsOnClicked()
 
 void UMainMenuWidget::StartOnClicked()
 {	
+	ASOKOBANGameMode* GameMode = GetWorld()->GetAuthGameMode<ASOKOBANGameMode>();
 
-	UGameplayStatics::OpenLevel(this, "GameMap");
+	if (GameMode)
+	{
+		GameMode->SpawnLevel();
 
-	//https://nerivec.github.io/old-ue4-wiki/pages/clear-widgets-when-switching-levels.html
+		RemoveFromParent();
+	}	
 }
 
 void UMainMenuWidget::ExitOnClicked()

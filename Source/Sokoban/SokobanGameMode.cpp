@@ -16,16 +16,19 @@ ASOKOBANGameMode::ASOKOBANGameMode()
 void ASOKOBANGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	if (MainMenuWidgetClass)
-	{
-		MenuWidget = Cast<UMainMenuWidget>(CreateWidget(GetWorld(), MainMenuWidgetClass));
-
-		if (MenuWidget)
-		{
-			MenuWidget->AddToViewport();
-		}
-	}
+void ASOKOBANGameMode::SpawnLevel()
+{
+	FVector Location(0);
+	FTransform Transform(Location);
+	AGameLevels* GameLevel = GetWorld()->SpawnActor<AGameLevels>(GameLevelsClass, Transform);
+	GameLevel->AnalyzeTileMap();
+	GameLevel->ClearGameTileMapLayer();
+	GameLevel->SpawnPlayer();
+	GameLevel->SpawnBoxes(4);
+	GameLevel->SpawnCoins(3);
+	GameLevel->SpawnGoals(3);
 }
 
 
