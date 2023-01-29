@@ -10,12 +10,14 @@
 #include "TimerManager.h"
 #include "Player_CPP.generated.h"
 
+
 UCLASS()
 class SOKOBAN_API APlayer_CPP : public APawn
 {
 	GENERATED_BODY()
 
 public:
+
 	// Sets default values for this pawn's properties
 	APlayer_CPP();
 
@@ -34,11 +36,6 @@ protected:
 
 	// Movement
 	FVector DirectionToVector(float InTileSize, ENUM_Direction Direction);
-
-	UFUNCTION(BlueprintNativeEvent)
-	void LerpTo_BP(AActor* InHitActor, FVector InMoveOffset);
-
-	void LerpTo();
 
 	void Move(ENUM_Direction Direction);
 

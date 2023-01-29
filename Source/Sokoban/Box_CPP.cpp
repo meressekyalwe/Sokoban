@@ -20,4 +20,9 @@ void ABox_CPP::UpdateColor_BP_Implementation(ENUM_Color Color)
 void ABox_CPP::UpdateColor(ENUM_Color Color)
 {
 	UpdateColor_BP(Color);
+
+	if (Color != ENUM_Color::Red)
+	{
+		Tags.Add(FName("Movable"));
+	}
 }

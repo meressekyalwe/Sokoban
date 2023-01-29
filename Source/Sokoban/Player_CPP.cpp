@@ -5,7 +5,7 @@
 #include "Components/InputComponent.h"
 #include "Engine/GameEngine.h"
 #include "Engine/World.h"
-
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 APlayer_CPP::APlayer_CPP()
@@ -87,15 +87,6 @@ FVector APlayer_CPP::DirectionToVector(float InTileSize, ENUM_Direction Directio
 	return TileSize * FVector();
 }
 
-void APlayer_CPP::LerpTo_BP_Implementation(AActor* InHitActor, FVector InMoveOffset)
-{
-	// In BP
-}
-
-void APlayer_CPP::LerpTo()
-{
-	LerpTo_BP(HitActor, MoveOffset);
-}
 
 void APlayer_CPP::Move(ENUM_Direction Direction)
 {
@@ -106,8 +97,7 @@ void APlayer_CPP::Move(ENUM_Direction Direction)
 		if (TryMove(Direction))
 		{
 			bCanMove = false;
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, 1.f, true, MoveDelayTime);
-			bCanMove = true;
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() { bCanMove = true; }, MoveDelayTime, false);
 			UpdateAnimation(ENUM_Direction::Stop);
 		}
 	}
@@ -127,39 +117,58 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 
 	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, TraceParams))
 	{
-		HitActor = OutHit.GetActor();
+		TArray< struct FHitResult > OutHits;
 
 		if (HitActor->ActorHasTag(FName("Movable")))
 		{
-			
+			End = HitActor->GetActorLocation() + MoveOffset;
 
+			if (GetWorld()->LineTraceMultiByChannel(OutHits, Start, End, ECC_Visibility, TraceParams))
+			{
+				if (OutHits.Num() == 2)
+				{
+					bMoveSuccessful = false;
+				}
+				else
+				{
+					if (bLerpMovement)
+					{
+						// Lerp Event
+					
+					}
+					else
+					{
+						HitActor->AddActorWorldOffset(MoveOffset, true, nullptr, ETeleportType::None);
+						AddActorWorldOffset(MoveOffset, true, nullptr, ETeleportType::None);
+					}
 
+					bMoveSuccessful = true;
+				}
+
+			}
 		}
 		else
 		{
-			if (HitActor->ActorHasTag(FName("Coin")))
+			if (!HitActor->ActorHasTag(FName("Coin")))
 			{
 				bMoveSuccessful = false;
 			}
-			else
-			{
-
-			}
 		}
-	}
-	
-
-	if (bLerpMovement)
-	{
-		LerpTo_BP(HitActor, MoveOffset);
-		bMoveSuccessful = true;
 	}
 	else
 	{
-		AddActorWorldOffset(MoveOffset, true, nullptr, ETeleportType::None);
+		if (HitActor->ActorHasTag(FName("Coin")) && bLerpMovement)
+		{
+			// Lerp Event
+		}
+		else
+		{
+			AddActorWorldOffset(MoveOffset, true, nullptr, ETeleportType::None);
+		}
+
 		bMoveSuccessful = true;
 	}
-
+	
 	return bMoveSuccessful;
 }
 

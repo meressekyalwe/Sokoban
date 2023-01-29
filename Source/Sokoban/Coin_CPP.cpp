@@ -10,9 +10,11 @@ ACoin_CPP::ACoin_CPP()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
 	Sprite->SetupAttachment(RootComponent);
+
+	Tags.Add(FName("Coin"));
 }
 
 void ACoin_CPP::BeginPlay()
 {
-
+	
 }
