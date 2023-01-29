@@ -5,7 +5,11 @@
 
 ABox_CPP::ABox_CPP()
 {
-	//Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
+	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	Sprite->SetupAttachment(RootComponent);
 }
 
 void ABox_CPP::UpdateColor_BP_Implementation(ENUM_Color Color)

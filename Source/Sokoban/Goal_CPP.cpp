@@ -5,9 +5,11 @@
 
 AGoal_CPP::AGoal_CPP()
 {
-	//Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
+	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
 
-	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	Sprite->SetupAttachment(RootComponent);
 }
 
 

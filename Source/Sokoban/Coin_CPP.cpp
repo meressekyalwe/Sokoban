@@ -5,7 +5,11 @@
 
 ACoin_CPP::ACoin_CPP()
 {
-	//Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
+	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	Sprite->SetupAttachment(RootComponent);
 }
 
 void ACoin_CPP::BeginPlay()

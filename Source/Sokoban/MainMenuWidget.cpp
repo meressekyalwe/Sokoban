@@ -13,8 +13,6 @@ bool UMainMenuWidget::Initialize()
 {
 	Super::Initialize();
 
-	//Title->SetText(FText(""));
-
 	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::SettingsOnClicked);
 
 	Start->OnClicked.AddDynamic(this, &UMainMenuWidget::StartOnClicked);
@@ -50,5 +48,4 @@ void UMainMenuWidget::ExitOnClicked()
 		UKismetSystemLibrary::ExecuteConsoleCommand(World, TEXT("quit"));
 	}
 }
-
 

@@ -7,13 +7,14 @@
 #include "PaperSpriteComponent.h"
 #include "Components/BoxComponent.h"
 #include "Types.h"
+#include "GameFramework/Actor.h"
 #include "Goal_CPP.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SOKOBAN_API AGoal_CPP : public APaperSpriteActor
+class SOKOBAN_API AGoal_CPP : public AActor
 {
 	GENERATED_BODY()
 
@@ -26,11 +27,8 @@ public:
 
 	void UpdateColor(ENUM_Color Color);
 
-	//UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	//UPaperSpriteComponent* Sprite;	
-
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UBoxComponent* Box;
+	UPaperSpriteComponent* Sprite;	
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	bool bOccupied = false;

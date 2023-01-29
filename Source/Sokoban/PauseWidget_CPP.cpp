@@ -4,6 +4,7 @@
 #include "PauseWidget_CPP.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerController.h"
+#include "Engine/World.h"
 
 
 bool UPauseWidget_CPP::Initialize()
@@ -11,6 +12,7 @@ bool UPauseWidget_CPP::Initialize()
 	Super::Initialize();
 
 	ContinueGame->OnClicked.AddDynamic(this, &UPauseWidget_CPP::ContinueGameButtonClicked);
+	QuitGame->OnClicked.AddDynamic(this, &UPauseWidget_CPP::QuitGameButtonClicked);
 
 	return true;
 }
@@ -28,4 +30,14 @@ void UPauseWidget_CPP::ContinueGameButtonClicked()
 	}
 
 	RemoveFromParent();
+}
+
+void UPauseWidget_CPP::QuitGameButtonClicked()
+{
+	UWorld* World = GetWorld();
+
+	if (World)
+	{
+		UKismetSystemLibrary::ExecuteConsoleCommand(World, TEXT("quit"));
+	}
 }

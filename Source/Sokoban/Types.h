@@ -27,7 +27,8 @@ enum class ENUM_Direction : uint8
 	Up UMETA(DisplayName = "The up direction"),
 	Down UMETA(DisplayName = "The down direction"),
 	Right UMETA(DisplayName = "The right direction"),
-	Left UMETA(DisplayName = "The left direction")
+	Left UMETA(DisplayName = "The left direction"),
+	Stop UMETA(DisplayName = "Don't move")
 };
 
 UENUM(BlueprintType)

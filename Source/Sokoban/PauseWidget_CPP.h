@@ -21,6 +21,12 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* ContinueGame;
 
+	UPROPERTY(meta = (BindWidget))
+	class UButton* QuitGame;
+
 	UFUNCTION()
 	void ContinueGameButtonClicked();
+
+	UFUNCTION()
+	void QuitGameButtonClicked();
 };

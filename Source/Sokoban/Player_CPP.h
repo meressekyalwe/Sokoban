@@ -27,6 +27,23 @@ protected:
 
 	void HorizontalMove(float AxisValue);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void UpdateAnimation_BP(ENUM_Direction Direction);
+
+	void UpdateAnimation(ENUM_Direction Direction);
+
+	// Movement
+	FVector DirectionToVector(float InTileSize, ENUM_Direction Direction);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void LerpTo_BP(AActor* InHitActor, FVector InMoveOffset);
+
+	void LerpTo();
+
+	void Move(ENUM_Direction Direction);
+
+	bool TryMove(ENUM_Direction Direction);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -38,11 +55,32 @@ public:
 	UPaperFlipbookComponent* Sprite;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	FVector MovementDirection;
+	float TileSize = 128.0f;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	float MovementSpeed = 128.0f;
+	float MoveDelayTime = 0.2f;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	float Delaytime = 0.2f;	
+	AActor* HitActor;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	FVector MoveOffset;
+
+private:
+
+	// Local variables
+	bool bMoveSuccessful = false;
+
+	// Movement
+	bool bCanMove = true;
+
+	bool bLerpMovement = true;
+
+	float LerpMoveTime = 0.2f;
+
+	float MovePositiveThreshold = 0.8f;
+
+	float MoveNegativeThreshold = -0.8f;
+
+	FTimerHandle TimerHandle;
 };

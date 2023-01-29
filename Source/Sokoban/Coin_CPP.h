@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "PaperSpriteActor.h"
 #include "PaperSpriteComponent.h"
+#include "GameFramework/Actor.h"
 #include "Coin_CPP.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SOKOBAN_API ACoin_CPP : public APaperSpriteActor
+class SOKOBAN_API ACoin_CPP : public AActor
 {
 	GENERATED_BODY()
 
@@ -21,6 +22,6 @@ public:
 
 	virtual void BeginPlay() override;
 	
-	//UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	//UPaperSpriteComponent* Sprite;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	UPaperSpriteComponent* Sprite;
 };

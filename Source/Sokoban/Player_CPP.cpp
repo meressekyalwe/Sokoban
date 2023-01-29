@@ -3,6 +3,8 @@
 
 #include "Player_CPP.h"
 #include "Components/InputComponent.h"
+#include "Engine/GameEngine.h"
+#include "Engine/World.h"
 
 
 // Sets default values
@@ -28,27 +30,143 @@ void APlayer_CPP::BeginPlay()
 
 void APlayer_CPP::VerticalMove(float AxisValue)
 {
-	MovementDirection.Z = FMath::Clamp(AxisValue, -1.0f, 1.0f);
+	if (AxisValue > 0)
+	{
+		Move(ENUM_Direction::Up);
+	}
+	if (AxisValue < 0)
+	{
+		Move(ENUM_Direction::Down);
+	}
 }
 
 void APlayer_CPP::HorizontalMove(float AxisValue)
 {
-	MovementDirection.X = FMath::Clamp(AxisValue, -1.0f, 1.0f);
+	if (AxisValue > 0)
+	{
+		Move(ENUM_Direction::Right);
+	}
+	if (AxisValue < 0)
+	{
+		Move(ENUM_Direction::Right);
+	}
+}
+
+void APlayer_CPP::UpdateAnimation_BP_Implementation(ENUM_Direction Direction)
+{
+	// In Blueprint
+}
+
+void APlayer_CPP::UpdateAnimation(ENUM_Direction Direction)
+{
+	UpdateAnimation_BP(Direction);
+}
+
+FVector APlayer_CPP::DirectionToVector(float InTileSize, ENUM_Direction Direction)
+{
+	FVector DirectionMove(ForceInitToZero);
+
+	switch (Direction)
+	{
+	case ENUM_Direction::Up:
+		DirectionMove.Set(0.f, 0.f, 1.f);
+		break;
+	case ENUM_Direction::Down:
+		DirectionMove.Set(0.f, 0.f, -1.f);
+		break;
+	case ENUM_Direction::Right:
+		DirectionMove.Set(1.f, 0.f, 0.f);
+		break;
+	case ENUM_Direction::Left:
+		DirectionMove.Set(-1.f, 0.f, 0.f);
+		break;
+	default:
+		break;
+	}
+
+	return TileSize * FVector();
+}
+
+void APlayer_CPP::LerpTo_BP_Implementation(AActor* InHitActor, FVector InMoveOffset)
+{
+	// In BP
+}
+
+void APlayer_CPP::LerpTo()
+{
+	LerpTo_BP(HitActor, MoveOffset);
+}
+
+void APlayer_CPP::Move(ENUM_Direction Direction)
+{
+	if (bCanMove)
+	{
+		UpdateAnimation(Direction);
+
+		if (TryMove(Direction))
+		{
+			bCanMove = false;
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, 1.f, true, MoveDelayTime);
+			bCanMove = true;
+			UpdateAnimation(ENUM_Direction::Stop);
+		}
+	}
+}
+
+bool APlayer_CPP::TryMove(ENUM_Direction Direction)
+{
+	
+	MoveOffset = DirectionToVector(TileSize, Direction);
+
+
+	FHitResult OutHit;
+	FVector Start = GetActorLocation();
+	FVector End = GetActorLocation() + MoveOffset;
+	FCollisionQueryParams TraceParams;
+
+
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, TraceParams))
+	{
+		HitActor = OutHit.GetActor();
+
+		if (HitActor->ActorHasTag(FName("Movable")))
+		{
+			
+
+
+		}
+		else
+		{
+			if (HitActor->ActorHasTag(FName("Coin")))
+			{
+				bMoveSuccessful = false;
+			}
+			else
+			{
+
+			}
+		}
+	}
+	
+
+	if (bLerpMovement)
+	{
+		LerpTo_BP(HitActor, MoveOffset);
+		bMoveSuccessful = true;
+	}
+	else
+	{
+		AddActorWorldOffset(MoveOffset, true, nullptr, ETeleportType::None);
+		bMoveSuccessful = true;
+	}
+
+	return bMoveSuccessful;
 }
 
 // Called every frame
 void APlayer_CPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	SetActorTickInterval(Delaytime);
-
-	if (!MovementDirection.IsZero())
-	{
-		const FVector NewActorLocation = GetActorLocation() + (MovementDirection * MovementSpeed);
-
-		SetActorLocation(NewActorLocation);
-	}
 }
 
 // Called to bind functionality to input
@@ -56,8 +174,8 @@ void APlayer_CPP::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &APlayer_CPP::VerticalMove);
 	PlayerInputComponent->BindAxis(TEXT("Horizontal"), this, &APlayer_CPP::HorizontalMove);
+	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &APlayer_CPP::VerticalMove);	
 }
 
 
