@@ -21,8 +21,12 @@ void ABox_CPP::UpdateColor(ENUM_Color Color)
 {
 	UpdateColor_BP(Color);
 
-	if (Color != ENUM_Color::Red)
+	if (Color != ENUM_Color::Red && Color != ENUM_Color::Red2d)
 	{
 		Tags.Add(FName("Movable"));
+	}
+	else
+	{
+		Tags.Add(FName("Static"));
 	}
 }

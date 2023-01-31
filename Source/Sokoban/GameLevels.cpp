@@ -51,7 +51,11 @@ ENUM_Color AGameLevels::StringToColor(FString String)
 	{
 		Color = ENUM_Color::Gray;
 	}
-
+	if (String.Equals(FString(TEXT("Red2d"), ESearchCase::CaseSensitive)))
+	{
+		Color = ENUM_Color::Red2d;
+	}
+	
 	return Color;
 }
 
@@ -113,6 +117,10 @@ void AGameLevels::AnalyzeTileMap()
 						GoalSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
 					}
 					else if (LeftS.Equals(FString(TEXT("Coin"), ESearchCase::CaseSensitive)))
+					{
+						CoinSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
+					}
+					else if (LeftS.Equals(FString(TEXT("Red2d"), ESearchCase::CaseSensitive)))
 					{
 						CoinSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
 					}

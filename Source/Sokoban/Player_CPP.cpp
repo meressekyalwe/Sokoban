@@ -20,6 +20,8 @@ APlayer_CPP::APlayer_CPP()
 	Sprite->SetupAttachment(RootComponent);
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
+	Tags.Add(FName("Movable"));
 }
 
 // Called when the game starts or when spawned
@@ -30,23 +32,23 @@ void APlayer_CPP::BeginPlay()
 
 void APlayer_CPP::VerticalMove(float AxisValue)
 {
-	if (AxisValue > 0)
-	{
-		Move(ENUM_Direction::Up);
-	}
-	if (AxisValue < 0)
+	if (AxisValue <= -0.8f)
 	{
 		Move(ENUM_Direction::Down);
+	}
+	else if (AxisValue >= 0.8f)
+	{
+		Move(ENUM_Direction::Up);
 	}
 }
 
 void APlayer_CPP::HorizontalMove(float AxisValue)
 {
-	if (AxisValue > 0)
+	if (AxisValue <= -0.8f)
 	{
-		Move(ENUM_Direction::Right);
+		Move(ENUM_Direction::Left);
 	}
-	if (AxisValue < 0)
+	else if (AxisValue >= 0.8)
 	{
 		Move(ENUM_Direction::Right);
 	}
@@ -64,27 +66,29 @@ void APlayer_CPP::UpdateAnimation(ENUM_Direction Direction)
 
 FVector APlayer_CPP::DirectionToVector(float InTileSize, ENUM_Direction Direction)
 {
-	FVector DirectionMove(ForceInitToZero);
+	FVector DirectionVector;
 
-	switch (Direction)
+	if (Direction == ENUM_Direction::Up)
 	{
-	case ENUM_Direction::Up:
-		DirectionMove.Set(0.f, 0.f, 1.f);
-		break;
-	case ENUM_Direction::Down:
-		DirectionMove.Set(0.f, 0.f, -1.f);
-		break;
-	case ENUM_Direction::Right:
-		DirectionMove.Set(1.f, 0.f, 0.f);
-		break;
-	case ENUM_Direction::Left:
-		DirectionMove.Set(-1.f, 0.f, 0.f);
-		break;
-	default:
-		break;
+		DirectionVector = FVector(0.0f, 0.0f, 1.0f);
 	}
 
-	return TileSize * FVector();
+	if (Direction == ENUM_Direction::Down)
+	{
+		DirectionVector = FVector(0.0f, 0.0f, -1.0f);
+	}
+
+	if (Direction == ENUM_Direction::Right)
+	{
+		DirectionVector = FVector(1.0f, 0.0f, 0.0f);
+	}
+
+	if (Direction == ENUM_Direction::Left)
+	{
+		DirectionVector = FVector(-1.0f, 0.0f, 0.0f);
+	}
+
+	return InTileSize * DirectionVector;
 }
 
 
@@ -97,33 +101,38 @@ void APlayer_CPP::Move(ENUM_Direction Direction)
 		if (TryMove(Direction))
 		{
 			bCanMove = false;
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]() { bCanMove = true; }, MoveDelayTime, false);
-			UpdateAnimation(ENUM_Direction::Stop);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle,this, &APlayer_CPP::PrintOnScreen, MoveDelayTime, true);
 		}
 	}
 }
 
 bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 {
-	
 	MoveOffset = DirectionToVector(TileSize, Direction);
-
 
 	FHitResult OutHit;
 	FVector Start = GetActorLocation();
-	FVector End = GetActorLocation() + MoveOffset;
+	FVector End = Start + MoveOffset;
 	FCollisionQueryParams TraceParams;
 
-
-	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, TraceParams))
+	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End + 2 * MoveOffset, ECC_Visibility, TraceParams))
 	{
-		TArray< struct FHitResult > OutHits;
+		HitActor = OutHit.GetActor();
+		HitActor->Tags.SetNum(1);
+		HitActor->Tags = OutHit.GetActor()->Tags;
 
-		if (HitActor->ActorHasTag(FName("Movable")))
+		TArray<FHitResult> OutHits;
+
+		if (HitActor->Tags[0] == FName("Static"))
 		{
-			End = HitActor->GetActorLocation() + MoveOffset;
+			bMoveSuccessful = false;
+		}
 
-			if (GetWorld()->LineTraceMultiByChannel(OutHits, Start, End, ECC_Visibility, TraceParams))
+		if (HitActor->Tags[0] == FName("Movable"))
+		{
+			End = OutHit.GetActor()->GetActorLocation() + MoveOffset;
+
+			if (GetWorld()->LineTraceMultiByChannel(OutHits, Start, End + 2 * MoveOffset, ECC_Visibility, TraceParams))
 			{
 				if (OutHits.Num() == 2)
 				{
@@ -133,43 +142,74 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 				{
 					if (bLerpMovement)
 					{
-						// Lerp Event
-					
+						LerpTo(HitActor, MoveOffset);
 					}
 					else
 					{
-						HitActor->AddActorWorldOffset(MoveOffset, true, nullptr, ETeleportType::None);
-						AddActorWorldOffset(MoveOffset, true, nullptr, ETeleportType::None);
+						HitActor->AddActorWorldOffset(MoveOffset, true);
+						AddActorWorldOffset(MoveOffset, true);
 					}
 
 					bMoveSuccessful = true;
 				}
-
 			}
 		}
 		else
 		{
-			if (!HitActor->ActorHasTag(FName("Coin")))
+			if (!(HitActor->Tags[0] == FName("Coin")))
 			{
 				bMoveSuccessful = false;
+			}
+			else
+			{
+				if (bLerpMovement)
+				{
+					LerpTo(this, MoveOffset);
+				}
+				else
+				{
+					AddActorWorldOffset(MoveOffset, true);
+				}
+
+				bMoveSuccessful = true;
 			}
 		}
 	}
 	else
 	{
-		if (HitActor->ActorHasTag(FName("Coin")) && bLerpMovement)
+		if (bLerpMovement)
 		{
-			// Lerp Event
+			LerpTo(this, MoveOffset);
 		}
 		else
 		{
-			AddActorWorldOffset(MoveOffset, true, nullptr, ETeleportType::None);
+			AddActorWorldOffset(MoveOffset, true);
 		}
 
 		bMoveSuccessful = true;
 	}
 	
 	return bMoveSuccessful;
+}
+
+void APlayer_CPP::LerpTo_BP_Implementation(AActor* InHitActor, FVector InMoveOffset)
+{
+	// In BP 
+}
+
+void APlayer_CPP::LerpTo(AActor* InHitActor, FVector InMoveOffset)
+{
+	LerpTo_BP(InHitActor, MoveOffset);
+}
+
+void APlayer_CPP::PrintOnScreen()
+{
+	if (bCanMove == true)
+	{
+		UpdateAnimation(ENUM_Direction::Stop);
+	}
+
+	bCanMove = true;
 }
 
 // Called every frame

@@ -41,6 +41,13 @@ protected:
 
 	bool TryMove(ENUM_Direction Direction);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void LerpTo_BP(AActor* InHitActor, FVector InMoveOffset);
+
+	void LerpTo(AActor* InHitActor, FVector InMoveOffset);
+
+	void PrintOnScreen();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -74,10 +81,6 @@ private:
 	bool bLerpMovement = true;
 
 	float LerpMoveTime = 0.2f;
-
-	float MovePositiveThreshold = 0.8f;
-
-	float MoveNegativeThreshold = -0.8f;
 
 	FTimerHandle TimerHandle;
 };
