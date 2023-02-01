@@ -25,6 +25,8 @@ AGameLevels::AGameLevels()
 void AGameLevels::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Tags.Add(FName("Static"));
 }
 
 ENUM_Color AGameLevels::StringToColor(FString String)
@@ -177,7 +179,7 @@ void AGameLevels::SpawnCoins(float Y_coordinate)
 	{
 		FVector Location(TileMapToWorld(CoinSpawnLocation[i].TileMapLocation, Y_coordinate));
 		FTransform Transform(Location);
-		GetWorld()->SpawnActor<AGoal_CPP>(CoinClass, Transform);
+		GetWorld()->SpawnActor<ACoin_CPP>(CoinClass, Transform);
 	}
 }
 

@@ -6,6 +6,8 @@
 #include "Engine/GameEngine.h"
 #include "Engine/World.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "DrawDebugHelpers.h"
+#include "Goal_CPP.h"
 
 // Sets default values
 APlayer_CPP::APlayer_CPP()
@@ -98,6 +100,7 @@ void APlayer_CPP::Move(ENUM_Direction Direction)
 	{
 		UpdateAnimation(Direction);
 
+
 		if (TryMove(Direction))
 		{
 			bCanMove = false;
@@ -111,12 +114,17 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 	MoveOffset = DirectionToVector(TileSize, Direction);
 
 	FHitResult OutHit;
+	const TArray<AActor*> ActorsToIgnore;
 	FVector Start = GetActorLocation();
 	FVector End = Start + MoveOffset;
 	FCollisionQueryParams TraceParams;
 
-	if (GetWorld()->LineTraceSingleByChannel(OutHit, Start, End + 2 * MoveOffset, ECC_Visibility, TraceParams))
+
+	if (UKismetSystemLibrary::LineTraceSingle(this, Start, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true,  FLinearColor::Green, FLinearColor::Red, 0.2f ))
 	{
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, TEXT("Hit"));
+
 		HitActor = OutHit.GetActor();
 		HitActor->Tags.SetNum(1);
 		HitActor->Tags = OutHit.GetActor()->Tags;
@@ -130,9 +138,7 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 
 		if (HitActor->Tags[0] == FName("Movable"))
 		{
-			End = OutHit.GetActor()->GetActorLocation() + MoveOffset;
-
-			if (GetWorld()->LineTraceMultiByChannel(OutHits, Start, End + 2 * MoveOffset, ECC_Visibility, TraceParams))
+			if (GetWorld()->LineTraceMultiByChannel(OutHits, Start, End + 2 * MoveOffset, ECollisionChannel::ECC_Visibility, TraceParams))
 			{
 				if (OutHits.Num() == 2)
 				{
