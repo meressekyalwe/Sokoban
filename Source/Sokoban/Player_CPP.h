@@ -64,23 +64,11 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	float MoveDelayTime = 0.2f;
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	AActor* HitActor;
-
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	FVector MoveOffset;
-
 private:
-
-	// Local variables
-	bool bMoveSuccessful = false;
-
 	// Movement
 	bool bCanMove = true;
 
 	bool bLerpMovement = true;
-
-	float LerpMoveTime = 0.2f;
 
 	FTimerHandle TimerHandle;
 };

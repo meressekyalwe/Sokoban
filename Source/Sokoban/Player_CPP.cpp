@@ -111,78 +111,69 @@ void APlayer_CPP::Move(ENUM_Direction Direction)
 
 bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 {
-	MoveOffset = DirectionToVector(TileSize, Direction);
+	bool bMoveSuccessful = false;
+	FVector MoveOffset = DirectionToVector(TileSize, Direction);
 
 	FHitResult OutHit;
 	const TArray<AActor*> ActorsToIgnore;
 	FVector Start = GetActorLocation();
 	FVector End = Start + MoveOffset;
-	FCollisionQueryParams TraceParams;
 
+	AActor* HitActor;
 
 	if (UKismetSystemLibrary::LineTraceSingle(this, Start, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true,  FLinearColor::Green, FLinearColor::Red, 0.2f ))
 	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Yellow, TEXT("Hit"));
-
 		HitActor = OutHit.GetActor();
 		HitActor->Tags.SetNum(1);
 		HitActor->Tags = OutHit.GetActor()->Tags;
-
-		TArray<FHitResult> OutHits;
+		HitActor->GetClass();
 
 		if (HitActor->Tags[0] == FName("Static"))
 		{
 			bMoveSuccessful = false;
 		}
-
-		if (HitActor->Tags[0] == FName("Movable"))
+		else if (HitActor->Tags[0] == FName("Movable"))
 		{
-			if (GetWorld()->LineTraceMultiByChannel(OutHits, Start, End + 2 * MoveOffset, ECollisionChannel::ECC_Visibility, TraceParams))
-			{
-				if (OutHits.Num() == 2)
-				{
-					bMoveSuccessful = false;
-				}
-				else
-				{
-					if (bLerpMovement)
-					{
-						LerpTo(HitActor, MoveOffset);
-					}
-					else
-					{
-						HitActor->AddActorWorldOffset(MoveOffset, true);
-						AddActorWorldOffset(MoveOffset, true);
-					}
+			const TArray<AActor*> HiActorIgnore{ HitActor };
 
-					bMoveSuccessful = true;
-				}
-			}
-		}
-		else
-		{
-			if (!(HitActor->Tags[0] == FName("Coin")))
+			if (UKismetSystemLibrary::LineTraceSingle(this, Start, End + MoveOffset, ETraceTypeQuery::TraceTypeQuery1, false, HiActorIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Green, FLinearColor::Red, 0.2f))
 			{
 				bMoveSuccessful = false;
+
+				if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Hit"));
 			}
 			else
 			{
 				if (bLerpMovement)
 				{
-					LerpTo(this, MoveOffset);
+					LerpTo(HitActor, MoveOffset);
 				}
 				else
 				{
+					HitActor->AddActorWorldOffset(MoveOffset, true);
 					AddActorWorldOffset(MoveOffset, true);
 				}
 
 				bMoveSuccessful = true;
+			}		
+		}
+		else if ((HitActor->Tags[0] == FName("Coin")))
+		{
+			if (bLerpMovement)
+			{
+				LerpTo(this, MoveOffset);
 			}
+			else
+			{
+				AddActorWorldOffset(MoveOffset, true);
+			}
+
+			bMoveSuccessful = true;
 		}
 	}
 	else
 	{
+
 		if (bLerpMovement)
 		{
 			LerpTo(this, MoveOffset);
@@ -205,7 +196,7 @@ void APlayer_CPP::LerpTo_BP_Implementation(AActor* InHitActor, FVector InMoveOff
 
 void APlayer_CPP::LerpTo(AActor* InHitActor, FVector InMoveOffset)
 {
-	LerpTo_BP(InHitActor, MoveOffset);
+	LerpTo_BP(InHitActor, InMoveOffset);
 }
 
 void APlayer_CPP::PrintOnScreen()

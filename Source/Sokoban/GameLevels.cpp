@@ -53,10 +53,6 @@ ENUM_Color AGameLevels::StringToColor(FString String)
 	{
 		Color = ENUM_Color::Gray;
 	}
-	if (String.Equals(FString(TEXT("Red2d"), ESearchCase::CaseSensitive)))
-	{
-		Color = ENUM_Color::Red2d;
-	}
 	
 	return Color;
 }
@@ -92,40 +88,35 @@ void AGameLevels::AnalyzeTileMap()
 
 	TileMap->GetMapSize(MapWidth, MapHeight, MapLayers);
 
-	for (int32 i = 0; i < MapLayers; i++)
+	int i = 0;
+
+	for (int32 j = 0; j < MapHeight; j++)
 	{
-		for (int32 j = 0; j < MapHeight; j++)
+		for (int32 k = 0; k < MapWidth; k++)
 		{
-			for (int32 k = 0; k < MapWidth; k++)
+			TileLocation = FSTR_TileMapLocation{ k, j, i };
+
+			FString LeftS;
+
+			FString RightS;
+
+			if (GetTileUserDataString(FSTR_TileMapLocation{ k, j, i }).Split(TEXT("_"), &LeftS, &RightS, ESearchCase::IgnoreCase, ESearchDir::FromStart))
 			{
-				TileLocation = FSTR_TileMapLocation{ k, j, i };
-
-				FString LeftS;
-
-				FString RightS;
-
-				if (GetTileUserDataString(FSTR_TileMapLocation{ k, j, i }).Split(TEXT("_"), &LeftS, &RightS, ESearchCase::IgnoreCase, ESearchDir::FromStart))
+				if (LeftS.Equals(FString(TEXT("PlayerStart"), ESearchCase::CaseSensitive)))
 				{
-					if (LeftS.Equals(FString(TEXT("PlayerStart"), ESearchCase::CaseSensitive)))
-					{
-						PlayerStartLocation = TileMapToWorld(TileLocation, 5.0f);
-					}
-					else if (LeftS.Equals(FString(TEXT("Box"), ESearchCase::CaseSensitive)))
-					{
-						BoxSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
-					}
-					else if (LeftS.Equals(FString(TEXT("Goal"), ESearchCase::CaseSensitive)))
-					{
-						GoalSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
-					}
-					else if (LeftS.Equals(FString(TEXT("Coin"), ESearchCase::CaseSensitive)))
-					{
-						CoinSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
-					}
-					else if (LeftS.Equals(FString(TEXT("Red2d"), ESearchCase::CaseSensitive)))
-					{
-						CoinSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
-					}
+					PlayerStartLocation = TileMapToWorld(TileLocation, 5.0f);
+				}
+				else if (LeftS.Equals(FString(TEXT("Box"), ESearchCase::CaseSensitive)))
+				{
+					BoxSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
+				}
+				else if (LeftS.Equals(FString(TEXT("Goal"), ESearchCase::CaseSensitive)))
+				{
+					GoalSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
+				}
+				else if (LeftS.Equals(FString(TEXT("Coin"), ESearchCase::CaseSensitive)))
+				{
+					CoinSpawnLocation.AddUnique({ TileLocation, StringToColor(RightS) });
 				}
 			}
 		}

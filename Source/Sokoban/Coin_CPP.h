@@ -11,6 +11,7 @@
 /**
  * 
  */
+//https://dev.epicgames.com/community/learning/tutorials/zw7m/hits-and-overlaps-bp-c-multiplayer
 UCLASS()
 class SOKOBAN_API ACoin_CPP : public AActor
 {
@@ -24,4 +25,10 @@ public:
 	
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	UPaperSpriteComponent* Sprite;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	class UBoxComponent* BoxCollision;
+
+	UFUNCTION()
+	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

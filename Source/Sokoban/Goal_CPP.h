@@ -7,6 +7,7 @@
 #include "PaperSpriteComponent.h"
 #include "Components/BoxComponent.h"
 #include "Types.h"
+#include "Box_CPP.h"
 #include "GameFramework/Actor.h"
 #include "Goal_CPP.generated.h"
 
@@ -22,6 +23,8 @@ public:
 
 	AGoal_CPP();
 
+	virtual void BeginPlay() override;
+
 	UFUNCTION(BlueprintNativeEvent)
 	void UpdateColor_BP(ENUM_Color Color);
 
@@ -30,6 +33,15 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	UPaperSpriteComponent* Sprite;	
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	UBoxComponent* Box;
+
+	UFUNCTION()
+	void OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	bool bOccupied = false;
 };

@@ -18,8 +18,7 @@ enum class ENUM_Color : uint8
 	Red UMETA(DisplayName = "The color Red"),
 	Blue UMETA(DisplayName = "The color Blue"),
 	Green UMETA(DisplayName = "The color Green"),
-	Gray UMETA(DisplayName = "The color Gray"),
-	Red2d UMETA(DisplayName = "The color Red2d"),
+	Gray UMETA(DisplayName = "The color Gray")
 };
 
 UENUM(BlueprintType)
