@@ -30,6 +30,7 @@ public:
 	virtual void BeginPlay() override;
 
 	// Tile Map
+
 	ENUM_Color StringToColor(FString String);
 
 	FString GetTileUserDataString(FSTR_TileMapLocation TileMapLocation);
@@ -40,6 +41,11 @@ public:
 
 	void ClearGameTileMapLayer();
 
+	UFUNCTION(BlueprintNativeEvent)
+	void SetTileMap_BP(int32 index);
+
+	void SetTileMap(int32 index);
+
 	// Spawning 
 
 	void SpawnBoxes(float Y_coordinate);
@@ -49,6 +55,8 @@ public:
 	void SpawnCoins(float Y_coordinate);
 
 	void SpawnPlayer();
+
+	void DestroyAllActors();
 
 	// SPAWN
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
@@ -86,6 +94,5 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<APlayer_CPP> PlayerClass;
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "Spawn")
-	USceneComponent* DefaultSceneRoot;
+	class APlayer_CPP* Player;
 };

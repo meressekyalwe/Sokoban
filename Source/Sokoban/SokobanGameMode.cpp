@@ -16,20 +16,87 @@ ASOKOBANGameMode::ASOKOBANGameMode()
 void ASOKOBANGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (GameWidgetClass)
+	{
+		GameWidget = Cast<UGameWidget_CPP>(CreateWidget(GetWorld(), GameWidgetClass));
+	}
 }
 
-void ASOKOBANGameMode::SpawnLevel()
+bool ASOKOBANGameMode::LevelComplete()
 {
-	FVector Location(0);
-	FTransform Transform(Location);
-	AGameLevels* GameLevel = GetWorld()->SpawnActor<AGameLevels>(GameLevelsClass, Transform);
-	GameLevel->AnalyzeTileMap();
-	GameLevel->SpawnPlayer();
-	GameLevel->ClearGameTileMapLayer();
-	GameLevel->SpawnBoxes(4);
-	GameLevel->SpawnCoins(3);
-	GameLevel->SpawnGoals(3);
+	TArray<AActor*> FoundGoals;
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGoal_CPP::StaticClass(), FoundGoals);
+
+	int Counting = 0;
+
+	for (AActor* TActor : FoundGoals)
+	{
+		AGoal_CPP* Goal = Cast<AGoal_CPP>(TActor);
+
+		if (Goal != nullptr)
+		{
+			if (Goal->bOccupied)
+			{
+				Counting += 1;
+			}			
+		}
+	}
+
+	return FoundGoals.Num() == Counting;
 }
+
+void ASOKOBANGameMode::NextGameLevel()
+{
+	if (LevelComplete())
+	{
+		CurrentLevelIndex += 1;
+
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+
+		if (GameWidget)
+		{
+			GameWidget->SetStatistics(nSteps, nCoins, CurrentLevelIndex);
+
+			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+			PlayerController->bShowMouseCursor = true;
+
+			if (CurrentLevelIndex == 1)
+			{
+				GameWidget->AddToViewport();
+			}
+			else
+			{	
+				GameWidget->SetVisibility(ESlateVisibility::Visible);
+			}	
+		}
+	}
+}
+
+void ASOKOBANGameMode::SetNextLevel()
+{
+	GameLevel->SetTileMap(CurrentLevelIndex);
+
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
+}
+
+void ASOKOBANGameMode::SpawnGameLevel()
+{
+	FVector Location(ForceInitToZero);
+	FTransform Transform(Location);
+	GameLevel = GetWorld()->SpawnActor<AGameLevels>(GameLevelsClass, Transform);
+	GameLevel->SetTileMap(CurrentLevelIndex);
+}
+
+void ASOKOBANGameMode::SetStatistiques(int32 OneStep, int32 OneCoin)
+{
+	if (OneStep) nSteps += OneStep;
+
+	if (OneCoin) nCoins += OneCoin;
+}
+
+
 
 
 

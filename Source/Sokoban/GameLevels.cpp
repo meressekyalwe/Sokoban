@@ -15,11 +15,9 @@ AGameLevels::AGameLevels()
 
 	TileMap = CreateDefaultSubobject<UPaperTileMapComponent>(TEXT("TileMapComponent"));
 
-	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	RootComponent = DefaultSceneRoot;
-
-	TileMap->SetupAttachment(DefaultSceneRoot);
+	TileMap->SetupAttachment(RootComponent);
 }
 
 void AGameLevels::BeginPlay()
@@ -135,10 +133,33 @@ void AGameLevels::ClearGameTileMapLayer()
 	{
 		for (int32 j = 0; j < MapWidth; j++)
 		{
-			FPaperTileInfo TileInfo{};
+			FPaperTileInfo TileInfo;
+
 			TileMap->SetTile(j, i, 0, TileInfo);
 		}
 	}
+}
+
+void AGameLevels::SetTileMap_BP_Implementation(int32 index)
+{
+  // In BP
+}
+
+void AGameLevels::SetTileMap(int32 index)
+{
+	SetTileMap_BP(index);
+
+	if (index)
+	{
+		DestroyAllActors();
+	}
+
+	AnalyzeTileMap();
+	ClearGameTileMapLayer();
+	SpawnBoxes(4);
+	SpawnCoins(3);
+	SpawnGoals(3);
+	SpawnPlayer();
 }
 
 void AGameLevels::SpawnBoxes(float Y_coordinate)
@@ -177,8 +198,44 @@ void AGameLevels::SpawnCoins(float Y_coordinate)
 void AGameLevels::SpawnPlayer()
 {
 	FTransform Transform(PlayerStartLocation);
-	APlayer_CPP* Palyer = GetWorld()->SpawnActor<APlayer_CPP>(PlayerClass, Transform);
+	Player = GetWorld()->SpawnActor<APlayer_CPP>(PlayerClass, Transform);
 }
+
+void AGameLevels::DestroyAllActors()
+{
+	Player->Destroy();
+
+	TArray<AActor*> Boxes;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABox_CPP::StaticClass(), Boxes);
+
+	for (AActor* TActor : Boxes)
+	{
+		ABox_CPP* Box = Cast<ABox_CPP>(TActor);
+
+		if (Box) Box->Destroy();
+	}
+
+	TArray<AActor*> Goals;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGoal_CPP::StaticClass(), Goals);
+
+	for (AActor* TActor : Goals)
+	{
+		ABox_CPP* Goal = Cast<ABox_CPP>(TActor);
+
+		if (Goal) Goal->Destroy();
+	}
+
+	TArray<AActor*> Coins;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACoin_CPP::StaticClass(), Coins);
+
+	for (AActor* TActor : Coins)
+	{
+		ABox_CPP* Coin = Cast<ABox_CPP>(TActor);
+
+		if (Coin) Coin->Destroy();
+	}
+}
+
 
 
 

@@ -5,10 +5,8 @@
 
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CoreMinimal.h"
-#include "Engine/DataTable.h"
 #include "Misc/Guid.h"
-#include "PaperTileMapComponent.h"
-#include "PaperSpriteComponent.h"
+#include "Engine/EngineTypes.h"
 #include "Types.generated.h"
 
 UENUM(BlueprintType)
@@ -74,8 +72,10 @@ struct FSTR_SpawnInformation
 	}
 };
 
+
 UCLASS()
 class SOKOBAN_API UTypes : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+
 };

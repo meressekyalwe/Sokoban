@@ -8,6 +8,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "Goal_CPP.h"
+#include "SOKOBANGameMode.h"
+
 
 // Sets default values
 APlayer_CPP::APlayer_CPP()
@@ -100,11 +102,17 @@ void APlayer_CPP::Move(ENUM_Direction Direction)
 	{
 		UpdateAnimation(Direction);
 
-
 		if (TryMove(Direction))
 		{
 			bCanMove = false;
 			GetWorld()->GetTimerManager().SetTimer(TimerHandle,this, &APlayer_CPP::PrintOnScreen, MoveDelayTime, true);
+			
+			ASOKOBANGameMode* GameMode = GetWorld()->GetAuthGameMode<ASOKOBANGameMode>();
+
+			if (GameMode)
+			{
+				GameMode->SetStatistiques(1, 0);
+			}
 		}
 	}
 }
@@ -121,10 +129,10 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 
 	AActor* HitActor;
 
-	if (UKismetSystemLibrary::LineTraceSingle(this, Start, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true,  FLinearColor::Green, FLinearColor::Red, 0.2f ))
+	if (UKismetSystemLibrary::LineTraceSingle(this, Start, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true,  FLinearColor::Green, FLinearColor::Red, 0.0f ))
 	{
 		HitActor = OutHit.GetActor();
-		HitActor->Tags.SetNum(1);
+		HitActor->Tags.SetNum(2);
 		HitActor->Tags = OutHit.GetActor()->Tags;
 		HitActor->GetClass();
 
@@ -136,7 +144,7 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 		{
 			const TArray<AActor*> HiActorIgnore{ HitActor };
 
-			if (UKismetSystemLibrary::LineTraceSingle(this, Start, End + MoveOffset, ETraceTypeQuery::TraceTypeQuery1, false, HiActorIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Green, FLinearColor::Red, 0.2f))
+			if (UKismetSystemLibrary::LineTraceSingle(this, Start, End + MoveOffset, ETraceTypeQuery::TraceTypeQuery1, false, HiActorIgnore, EDrawDebugTrace::None, OutHit, true, FLinearColor::Green, FLinearColor::Red, 0.0f))
 			{
 				bMoveSuccessful = false;
 

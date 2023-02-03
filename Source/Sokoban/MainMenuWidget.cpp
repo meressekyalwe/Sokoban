@@ -33,7 +33,10 @@ void UMainMenuWidget::StartOnClicked()
 
 	if (GameMode)
 	{
-		GameMode->SpawnLevel();
+		GameMode->SpawnGameLevel();
+
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		PlayerController->bShowMouseCursor = false;
 
 		RemoveFromParent();
 	}	

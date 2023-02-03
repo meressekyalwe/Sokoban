@@ -21,6 +21,8 @@ void ABox_CPP::UpdateColor(ENUM_Color Color)
 {
 	UpdateColor_BP(Color);
 
-	Tags.Add(FName("Movable"));
+	ColorOfBox = Color;
+
+	Tags.Add(FName("Movable")); // Movement
 }
 

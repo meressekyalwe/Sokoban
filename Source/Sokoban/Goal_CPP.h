@@ -9,11 +9,11 @@
 #include "Types.h"
 #include "Box_CPP.h"
 #include "GameFramework/Actor.h"
+#include "TimerManager.h"
 #include "Goal_CPP.generated.h"
 
-/**
- * 
- */
+
+
 UCLASS()
 class SOKOBAN_API AGoal_CPP : public AActor
 {
@@ -44,4 +44,8 @@ public:
 	
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	bool bOccupied = false;
+
+	FTimerHandle TimerHandle;
+
+	ENUM_Color ColorOfGoal;
 };

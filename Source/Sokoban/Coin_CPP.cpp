@@ -4,6 +4,7 @@
 #include "Coin_CPP.h"
 #include "Player_CPP.h"
 #include "Engine/GameEngine.h"
+#include "SOKOBANGameMode.h"
 
 ACoin_CPP::ACoin_CPP()
 {
@@ -20,6 +21,8 @@ ACoin_CPP::ACoin_CPP()
 
 void ACoin_CPP::BeginPlay()
 {
+	Super::BeginPlay();
+
 	Tags.Add(FName("Coin"));
 
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ACoin_CPP::OverlapBegin);
@@ -29,9 +32,15 @@ void ACoin_CPP::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 {
 	APlayer_CPP* Player = Cast<APlayer_CPP>(OtherActor);
 
+	ASOKOBANGameMode* GameMode = GetWorld()->GetAuthGameMode<ASOKOBANGameMode>();
+
 	if (Player)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Coin Overlap"));
+		if (GameMode)
+		{
+			GameMode->SetStatistiques(0, 1);
+		}
+
 		Destroy();
 	}
 }
