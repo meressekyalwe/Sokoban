@@ -5,18 +5,23 @@
 #include "Player_CPP.h"
 #include "Engine/GameEngine.h"
 #include "SOKOBANGameMode.h"
+#include "PaperSprite.h"
 
 ACoin_CPP::ACoin_CPP()
 {
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	Sprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
+	SpriteComponent = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("SpriteComp"));
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(FName("Box"));
 
-	Sprite->SetupAttachment(RootComponent);	
+	SpriteComponent->SetupAttachment(RootComponent);	
 
 	BoxCollision->SetupAttachment(RootComponent);
+
+	Sprite = LoadObject<UPaperSprite>(nullptr, TEXT("PaperSprite'/Game/PushPushPuzzle2DKit/Sprites/Coins/SP_CoinYellow.SP_CoinYellow'"));
+
+	SpriteComponent->SetSprite(Sprite);
 }
 
 void ACoin_CPP::BeginPlay()
