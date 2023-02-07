@@ -15,6 +15,7 @@
 #include "Types.h"
 #include "Containers/UnrealString.h"
 #include "PaperTileSet.h"
+#include "Camera/PlayerCameraManager.h"
 #include "GameLevels.generated.h"
 
 

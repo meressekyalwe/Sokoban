@@ -41,12 +41,13 @@ protected:
 
 	bool TryMove(ENUM_Direction Direction);
 
-	UFUNCTION(BlueprintNativeEvent)
-	void LerpTo_BP(AActor* InHitActor, FVector InMoveOffset);
-
 	void LerpTo(AActor* InHitActor, FVector InMoveOffset);
 
 	void PrintOnScreen();
+
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	class UCameraComponent* GameCamera;
 
 public:	
 	// Called every frame
@@ -61,14 +62,13 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	float TileSize = 128.0f;
 
-	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	float MoveDelayTime = 0.2f;
-
 private:
-	// Movement
+	// Movement all functions can directlly uses in this class
 	bool bCanMove = true;
 
 	bool bLerpMovement = true;
 
 	FTimerHandle TimerHandle;
+
+	float MoveDelayTime = 0.2f;
 };

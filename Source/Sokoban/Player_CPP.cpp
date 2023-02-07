@@ -9,6 +9,8 @@
 #include "DrawDebugHelpers.h"
 #include "Goal_CPP.h"
 #include "SOKOBANGameMode.h"
+#include "Engine/Classes/Camera/CameraComponent.h"
+#include "GameFramework/PlayerController.h"
 
 
 // Sets default values
@@ -24,6 +26,18 @@ APlayer_CPP::APlayer_CPP()
 	Sprite->SetupAttachment(RootComponent);
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
+	GameCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PawnCamera"));
+
+	GameCamera->SetWorldLocation(FVector(960.0f, 512.0f, -512.0f));
+
+	GameCamera->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+
+	GameCamera->SetProjectionMode(ECameraProjectionMode::Orthographic);
+
+	GameCamera->SetOrthoWidth(2048.f);
+
+	GameCamera->SetOrthoFarClipPlane(2048.f);
 
 	Tags.Add(FName("Movable"));
 }
@@ -197,14 +211,20 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 	return bMoveSuccessful;
 }
 
-void APlayer_CPP::LerpTo_BP_Implementation(AActor* InHitActor, FVector InMoveOffset)
-{
-	// In BP 
-}
 
 void APlayer_CPP::LerpTo(AActor* InHitActor, FVector InMoveOffset)
 {
-	LerpTo_BP(InHitActor, InMoveOffset);
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+
+	if (InHitActor)
+	{
+		FLatentActionInfo LatentInfoHit;
+		LatentInfoHit.CallbackTarget = InHitActor;
+		UKismetSystemLibrary::MoveComponentTo(InHitActor->GetRootComponent(), InHitActor->GetActorLocation() + InMoveOffset, FRotator(0.f , 0.f ,0.f), false, false, MoveDelayTime, false, EMoveComponentAction::Move, LatentInfoHit);
+
+		UKismetSystemLibrary::MoveComponentTo(RootComponent, GetActorLocation() + InMoveOffset, FRotator(0.f, 0.f, 0.f), false, false, MoveDelayTime, false, EMoveComponentAction::Move, LatentInfo);
+	}
 }
 
 void APlayer_CPP::PrintOnScreen()
