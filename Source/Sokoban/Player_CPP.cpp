@@ -11,19 +11,30 @@
 #include "SOKOBANGameMode.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "PaperFlipbook.h"
 
 
 // Sets default values
 APlayer_CPP::APlayer_CPP()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	Sprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PaperFlipbookComponent"));
+	FlipbookComponent = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("PaperFlipbookComponent"));
 
-	Sprite->SetupAttachment(RootComponent);
+	FlipbookComponent->SetupAttachment(RootComponent);
+
+	Flipbook = LoadObject<UPaperFlipbook>(nullptr, TEXT("PaperFlipbook'/Game/PushPushPuzzle2DKit/Animations/Plumber1/FB_Plumber1Down.FB_Plumber1Down'"));
+
+	FlipbookComponent->SetFlipbook(Flipbook);
+
+	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+
+	BoxCollision->SetupAttachment(RootComponent);
+
+	BoxCollision->InitBoxExtent(FVector(46.f, 32.f, 54.f));
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
@@ -45,7 +56,7 @@ APlayer_CPP::APlayer_CPP()
 // Called when the game starts or when spawned
 void APlayer_CPP::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 }
 
 void APlayer_CPP::VerticalMove(float AxisValue)
@@ -72,14 +83,38 @@ void APlayer_CPP::HorizontalMove(float AxisValue)
 	}
 }
 
-void APlayer_CPP::UpdateAnimation_BP_Implementation(ENUM_Direction Direction)
-{
-	// In Blueprint
-}
-
 void APlayer_CPP::UpdateAnimation(ENUM_Direction Direction)
 {
-	UpdateAnimation_BP(Direction);
+	if (Direction == ENUM_Direction::Up)
+	{
+		Flipbook = LoadObject<UPaperFlipbook>(nullptr, TEXT("PaperFlipbook'/Game/PushPushPuzzle2DKit/Animations/Plumber1/FB_MoveUp.FB_MoveUp'"));
+
+		if (Flipbook) FlipbookComponent->SetFlipbook(Flipbook);
+	}
+	else if (Direction == ENUM_Direction::Down)
+	{
+		Flipbook = LoadObject<UPaperFlipbook>(nullptr, TEXT("PaperFlipbook'/Game/PushPushPuzzle2DKit/Animations/Plumber1/FB_MoveDown.FB_MoveDown'"));
+
+		if (Flipbook) FlipbookComponent->SetFlipbook(Flipbook);
+	}
+	else if (Direction == ENUM_Direction::Right)
+	{
+		Flipbook = LoadObject<UPaperFlipbook>(nullptr, TEXT("PaperFlipbook'/Game/PushPushPuzzle2DKit/Animations/Plumber1/FB_MoveRight.FB_MoveRight'"));
+
+		if (Flipbook) FlipbookComponent->SetFlipbook(Flipbook);
+	}
+	else if (Direction == ENUM_Direction::Left)
+	{
+		Flipbook = LoadObject<UPaperFlipbook>(nullptr, TEXT("PaperFlipbook'/Game/PushPushPuzzle2DKit/Animations/Plumber1/FB_MoveLeft.FB_MoveLeft'"));
+
+		if (Flipbook) FlipbookComponent->SetFlipbook(Flipbook);
+	}
+	else if (Direction == ENUM_Direction::Stop)
+	{
+		Flipbook = LoadObject<UPaperFlipbook>(nullptr, TEXT("PaperFlipbook'/Game/PushPushPuzzle2DKit/Animations/Plumber1/FB_Plumber1Down.FB_Plumber1Down'"));
+
+		if (Flipbook) FlipbookComponent->SetFlipbook(Flipbook);
+	}
 }
 
 FVector APlayer_CPP::DirectionToVector(float InTileSize, ENUM_Direction Direction)
@@ -119,8 +154,8 @@ void APlayer_CPP::Move(ENUM_Direction Direction)
 		if (TryMove(Direction))
 		{
 			bCanMove = false;
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle,this, &APlayer_CPP::PrintOnScreen, MoveDelayTime, true);
-			
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &APlayer_CPP::PrintOnScreen, MoveDelayTime, true);
+
 			ASOKOBANGameMode* GameMode = GetWorld()->GetAuthGameMode<ASOKOBANGameMode>();
 
 			if (GameMode)
@@ -143,7 +178,7 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 
 	AActor* HitActor;
 
-	if (UKismetSystemLibrary::LineTraceSingle(this, Start, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true,  FLinearColor::Green, FLinearColor::Red, 0.0f ))
+	if (UKismetSystemLibrary::LineTraceSingle(this, Start, End, ETraceTypeQuery::TraceTypeQuery1, false, ActorsToIgnore, EDrawDebugTrace::None, OutHit, true, FLinearColor::Green, FLinearColor::Red, 0.0f))
 	{
 		HitActor = OutHit.GetActor();
 		HitActor->Tags.SetNum(2);
@@ -177,7 +212,7 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 				}
 
 				bMoveSuccessful = true;
-			}		
+			}
 		}
 		else if ((HitActor->Tags[0] == FName("Coin")))
 		{
@@ -207,7 +242,7 @@ bool APlayer_CPP::TryMove(ENUM_Direction Direction)
 
 		bMoveSuccessful = true;
 	}
-	
+
 	return bMoveSuccessful;
 }
 
@@ -221,7 +256,7 @@ void APlayer_CPP::LerpTo(AActor* InHitActor, FVector InMoveOffset)
 	{
 		FLatentActionInfo LatentInfoHit;
 		LatentInfoHit.CallbackTarget = InHitActor;
-		UKismetSystemLibrary::MoveComponentTo(InHitActor->GetRootComponent(), InHitActor->GetActorLocation() + InMoveOffset, FRotator(0.f , 0.f ,0.f), false, false, MoveDelayTime, false, EMoveComponentAction::Move, LatentInfoHit);
+		UKismetSystemLibrary::MoveComponentTo(InHitActor->GetRootComponent(), InHitActor->GetActorLocation() + InMoveOffset, FRotator(0.f, 0.f, 0.f), false, false, MoveDelayTime, false, EMoveComponentAction::Move, LatentInfoHit);
 
 		UKismetSystemLibrary::MoveComponentTo(RootComponent, GetActorLocation() + InMoveOffset, FRotator(0.f, 0.f, 0.f), false, false, MoveDelayTime, false, EMoveComponentAction::Move, LatentInfo);
 	}
@@ -249,7 +284,7 @@ void APlayer_CPP::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis(TEXT("Horizontal"), this, &APlayer_CPP::HorizontalMove);
-	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &APlayer_CPP::VerticalMove);	
+	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &APlayer_CPP::VerticalMove);
 }
 
 

@@ -29,9 +29,6 @@ protected:
 
 	void HorizontalMove(float AxisValue);
 
-	UFUNCTION(BlueprintNativeEvent)
-	void UpdateAnimation_BP(ENUM_Direction Direction);
-
 	void UpdateAnimation(ENUM_Direction Direction);
 
 	// Movement
@@ -45,11 +42,13 @@ protected:
 
 	void PrintOnScreen();
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+		UBoxComponent* BoxCollision;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	class UCameraComponent* GameCamera;
+		class UCameraComponent* GameCamera;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -57,10 +56,13 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	UPaperFlipbookComponent* Sprite;
+		UPaperFlipbookComponent* FlipbookComponent;
+
+	UPROPERTY()
+		UPaperFlipbook* Flipbook;
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-	float TileSize = 128.0f;
+		float TileSize = 128.0f;
 
 private:
 	// Movement all functions can directlly uses in this class
