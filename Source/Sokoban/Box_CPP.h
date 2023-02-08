@@ -27,6 +27,7 @@ public:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
     UPaperSpriteComponent* SpriteComponent;
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
 	UPaperSprite* Sprite;
 
 	ENUM_Color ColorOfBox;
