@@ -22,13 +22,12 @@ public:
 
 	ABox_CPP();
 
-	UFUNCTION(BlueprintNativeEvent)
-	void UpdateColor_BP(ENUM_Color Color);
-
 	void UpdateColor(ENUM_Color Color);
 
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
-    UPaperSpriteComponent* Sprite;
+    UPaperSpriteComponent* SpriteComponent;
+
+	UPaperSprite* Sprite;
 
 	ENUM_Color ColorOfBox;
 };
