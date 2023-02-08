@@ -42,9 +42,6 @@ public:
 
 	void ClearGameTileMapLayer();
 
-	UFUNCTION(BlueprintNativeEvent)
-	void SetTileMap_BP(int32 index);
-
 	void SetTileMap(int32 index);
 
 	// Spawning 
@@ -80,7 +77,10 @@ public:
 	FSTR_TileMapLocation TileLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UPaperTileMapComponent* TileMap;
+	UPaperTileMapComponent* TileMapComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPaperTileMap* TileMap;
 
 	// SUBCLASS
 	UPROPERTY(EditDefaultsOnly)

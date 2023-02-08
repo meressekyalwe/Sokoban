@@ -5,6 +5,8 @@
 #include "Engine/Engine.h"
 #include "TileMapBlueprintLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/ObjectLibrary.h"
+#include "PaperTileMap.h"
 
 
 
@@ -14,11 +16,15 @@ AGameLevels::AGameLevels()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	TileMap = CreateDefaultSubobject<UPaperTileMapComponent>(TEXT("TileMapComponent"));
+	TileMapComponent = CreateDefaultSubobject<UPaperTileMapComponent>(TEXT("TileMapComponent"));
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
-	TileMap->SetupAttachment(RootComponent);
+	TileMapComponent->SetupAttachment(RootComponent);
+
+	TileMap = LoadObject<UPaperTileMap>(nullptr, TEXT("PaperTileMap'/Game/PushPushPuzzle2DKit/TileMaps/TM_Map01.TM_Map01'"));
+
+	TileMapComponent->SetTileMap(TileMap);
 }
 
 void AGameLevels::BeginPlay()
@@ -58,7 +64,7 @@ ENUM_Color AGameLevels::StringToColor(FString String)
 
 FString AGameLevels::GetTileUserDataString(FSTR_TileMapLocation TileMapLocation)
 {
-	FPaperTileInfo TileInfo = TileMap->GetTile(TileMapLocation.X, TileMapLocation.Y, TileMapLocation.Layer);
+	FPaperTileInfo TileInfo = TileMapComponent->GetTile(TileMapLocation.X, TileMapLocation.Y, TileMapLocation.Layer);
 
 	if (TileInfo.TileSet)
 	{
@@ -72,11 +78,11 @@ FString AGameLevels::GetTileUserDataString(FSTR_TileMapLocation TileMapLocation)
 
 FVector AGameLevels::TileMapToWorld(FSTR_TileMapLocation TileMapLocation, float Y_coordinate)
 {
-	float Width = TileMap->TileMap->TileWidth * TileMapLocation.X;
+	float Width = TileMapComponent->TileMap->TileWidth * TileMapLocation.X;
 
-	float Height = - TileMap->TileMap->TileHeight * (TileMapLocation.Y);
+	float Height = - TileMapComponent->TileMap->TileHeight * (TileMapLocation.Y);
 
-	FVector WorldLocation = TileMap->K2_GetComponentLocation();
+	FVector WorldLocation = TileMapComponent->K2_GetComponentLocation();
 
 	return FVector(Width, Y_coordinate, Height) + WorldLocation;
 }
@@ -85,7 +91,7 @@ void AGameLevels::AnalyzeTileMap()
 {
 	int32 MapWidth, MapHeight, MapLayers;
 
-	TileMap->GetMapSize(MapWidth, MapHeight, MapLayers);
+	TileMapComponent->GetMapSize(MapWidth, MapHeight, MapLayers);
 
 	int i = 0;
 
@@ -124,11 +130,11 @@ void AGameLevels::AnalyzeTileMap()
 
 void AGameLevels::ClearGameTileMapLayer()
 {
-	TileMap->MakeTileMapEditable();
+	TileMapComponent->MakeTileMapEditable();
 
 	int32 MapWidth, MapHeight, MapLayers;
 
-	TileMap->GetMapSize(MapWidth, MapHeight, MapLayers);
+	TileMapComponent->GetMapSize(MapWidth, MapHeight, MapLayers);
 
 	for (int32 i = 0; i < MapHeight; i++)
 	{
@@ -136,19 +142,14 @@ void AGameLevels::ClearGameTileMapLayer()
 		{
 			FPaperTileInfo TileInfo;
 
-			TileMap->SetTile(j, i, 0, TileInfo);
+			TileMapComponent->SetTile(j, i, 0, TileInfo);
 		}
 	}
 }
 
-void AGameLevels::SetTileMap_BP_Implementation(int32 index)
-{
-  // In BP
-}
-
 void AGameLevels::SetTileMap(int32 index)
 {
-	SetTileMap_BP(index);
+	
 
 	if (index)
 	{
